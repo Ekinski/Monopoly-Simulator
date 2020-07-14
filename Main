@@ -1,0 +1,222 @@
+using System;
+
+namespace MonopolySim
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+
+            int MonopolySize = 40;
+            int NumberofPlayers = 5;
+            int[] Monopoly = new int[MonopolySize];
+            int NumberofRounds = 2000;
+            int Rounds = 0;
+            int Dice1 = 0;
+            int Dice2 = 0;
+            int[] Move = new int [NumberofPlayers];
+            int NumberofThrows = 0;
+            int p1 = 0;
+            int jail = 0;
+            int CardNumber = 0;
+            int CommunityCard = 0;
+            int ChanceCount = 0;
+            int CommunityCount = 0;
+            Random rnd = new Random();
+            for ( NumberofThrows = 0; NumberofThrows < NumberofThrows +5; NumberofThrows++)
+            {
+                //START 
+                
+                for (int a = 0; a < NumberofPlayers; a++)
+                {
+                    Dice1 = rnd.Next(1, 7);
+                    Dice2 = rnd.Next(1, 7);
+                    Console.WriteLine("DICE1 " + Dice1);
+                    Console.WriteLine("DICE2 " + Dice2);
+
+                    Move[a] = Move[a] + Dice1 + Dice2;
+
+                    Console.WriteLine("DICE NUMBER: " + Move[a] +" FOR PLAYER " + (a +1) );
+                }
+
+
+
+
+                //BOARD
+                for (int a = 0; a < NumberofPlayers; a++)
+                {
+                    if (Move[a] >= MonopolySize)
+                    {
+                        Move[a] = Move[a] - MonopolySize;
+                        Console.WriteLine("DICE NUMBER AFTER -----: " + Move[a]);
+                        if (a == 0)
+                        {
+                            p1++; // player 1 passing start
+                        }
+
+                    }
+
+                    Monopoly[Move[a]] = Monopoly[Move[a]] + 1;
+
+                    if ( Move[a] == 7 || Move[a] == 22 || Move[a] == 36) // Chance CARDS
+                    {
+                        CardNumber++;
+                        ChanceCount++;
+                        if (CardNumber > 15) // number of cases
+                        {
+                            CardNumber = 0;
+                        }
+                        switch (CardNumber)
+                        {
+                            case 1: // Advance to Illinois Ave
+                                Move[a] = 14;
+                                Monopoly[Move[a]] = Monopoly[Move[a]] + 1;
+                                
+                                break;
+                            case 2: // Advance to St. Charles Place
+                                Move[a] = 11;
+                                Monopoly[Move[a]] = Monopoly[Move[a]] + 1;
+                                
+                                break;
+                            case 3: // Advance token to nearest Utility.
+                                if (Move[a] >= 20)
+                                {
+                                    Move[a] = 28;
+                                } else
+                                {
+                                    Move[a] = 12;
+                                }
+                                Monopoly[Move[a]] = Monopoly[Move[a]] + 1;
+                                
+                                break;
+                            case 4: // Advance token to the nearest Railroad
+                                if (Move[a] >= 0 && Move[a] < 10)
+                                {
+                                    Move[a] = 5;
+                                } else if (Move[a] >= 10 && Move[a] < 20)
+                                {
+                                    Move[a] = 15;
+                                } else if (Move[a] >= 20 && Move[a] < 30)
+                                {
+                                    Move[a] = 25;
+                                } else if (Move[a] >= 30 && Move[a] < 39)
+                                {
+                                    Move[a] = 35;
+                                }   
+                                Monopoly[Move[a]] = Monopoly[Move[a]] + 1;
+                                
+                                break;
+                            case 5: // Go Back Three {3} Spaces.
+                                
+                                if (Move[a]>=3)
+                                {
+                                    Move[a] = Move[a] - 3;
+                                } else if (Move[a] < 3)
+                                {
+                                    
+                                    Move[a] = Move[a] + (40 - 3);
+                                }
+                                
+                                Monopoly[Move[a]] = Monopoly[Move[a]] + 1;
+                                
+                                break;
+                            case 6: // Go to Jail. Go directly to Jail.
+                                Move[a] = 10;
+                                Monopoly[Move[a]] = Monopoly[Move[a]] + 1;
+                                
+                                break;
+                            case 7: // Take a trip to Reading Railroad.
+                                Move[a] = 5;
+                                Monopoly[Move[a]] = Monopoly[Move[a]] + 1;
+                                
+                                break;
+                            case 8: // Take a walk on the Boardwalk.
+                                Move[a] = 39;
+                                Monopoly[Move[a]] = Monopoly[Move[a]] + 1;
+                                
+                                break;
+
+                        }
+                        
+                    }
+                    if (Move[a] == 2 || Move[a] == 17 || Move[a] == 33) // Community Chest CARDS
+                    {
+                        CommunityCount++;
+                        CommunityCard++;
+                        if (CommunityCard > 17)
+                        {
+                            CommunityCard = 0;
+                        }
+                        switch(CommunityCard){
+                            case 1: // Advance to "Go"
+                                Move[a] = 0;
+                                Monopoly[Move[a]] = Monopoly[Move[a]] + 1;
+                                
+                                break;
+                            case 2: // Go to Jail.
+                                Move[a] = 10;
+                                Monopoly[Move[a]] = Monopoly[Move[a]] + 1;
+                                
+                                break;
+                        }
+                    }
+
+                        if ( Move[a] == 30)
+                    {
+                        Move[a] = 10;
+                        Monopoly[Move[a]] = Monopoly[Move[a]] + 1;
+                        jail++;
+                       
+                    }
+                    Console.WriteLine(Move[a] + " ACCESS OF " + Monopoly[Move[a]]);
+                }
+
+
+                //End TESTING
+                Rounds++;
+                Console.WriteLine("ROUND!! ---> " + Rounds);
+                if (Rounds >= NumberofRounds)
+                {
+                    break;
+                }
+            }
+
+            //PRINTING 
+            int track = 0;
+            int endGame = 0;
+            foreach (int g in Monopoly)
+            {
+                track++;
+                endGame = endGame + g;
+                Console.WriteLine("Number "+ track + ": " +g);
+            }
+            Console.WriteLine("");
+            decimal results = 0;
+            track = 0;
+             
+            foreach (int g in Monopoly)
+            {
+                track++;
+                results = (decimal)g / (decimal)endGame;
+                results = results * 100;
+                Console.WriteLine("Number " + track + ": " + Math.Round(results,1) + "%");
+                
+            }
+            
+            Console.WriteLine("TOGETHER = " + endGame);
+            //STATS
+            Console.WriteLine("Jail Time = " + jail); // <--- DELETABLE 
+            Console.WriteLine(" START ACCESS " + Monopoly[0]);
+            Console.WriteLine(" END ACCESS " + Monopoly[MonopolySize -1]);
+            Console.WriteLine("Number of Times Player1 pass the start " + p1);
+            Console.WriteLine("Number of Chance cards Picked " + ChanceCount);
+            Console.WriteLine("Number of Community cards Picked " + CommunityCount);
+            Console.WriteLine("Number of Cards Picked (Chance + Community) " + (ChanceCount + CommunityCount));
+
+
+
+        }
+
+        
+    }
+}
